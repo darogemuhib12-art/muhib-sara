@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Sara — Always</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0f;
+    --dark: #0f0f1a;
+    --rose: #f4a0b0;
+    --rose-dim: rgba(244,160,176,0.15);
+    --gold: #f0d080;
+    --gold-dim: rgba(240,208,128,0.12);
+    --white: #f5f0ec;
+    --white-dim: rgba(245,240,236,0.6);
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Lato', sans-serif;
+    --font-hand: 'Caveat', cursive;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  #petalCanvas {
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events:none; z-index:999; opacity:0.45;
+  }
+
+  /* ── NAV BUTTON (shared) ── */
+  .nav-btn {
+    display: inline-flex;
+    align-items: center; gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--rose);
+    border: 1px solid rgba(244,160,176,0.35);
+    background: transparent;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+    border-radius: 40px;
+    text-decoration: none;
+    position: relative;
+    z-index: 2;
+  }
+  .nav-btn:hover {
+    background: rgba(244,160,176,0.1);
+    border-color: var(--rose);
+    box-shadow: 0 0 24px rgba(244,160,176,0.28);
+    transform: translateY(-2px);
+  }
+  .nav-btn.gold {
+    color: var(--gold);
+    border-color: rgba(240,208,128,0.35);
+  }
+  .nav-btn.gold:hover {
+    background: rgba(240,208,128,0.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 24px rgba(240,208,128,0.28);
+  }
+  .nav-btn-wrap {
+    display:flex; justify-content:center;
+    padding: 2.5rem 0 1rem;
+    position: relative; z-index: 2;
+  }
+  .arrow-bounce {
+    display:inline-block;
+    animation: arrowBounce 1.4s ease-in-out infinite;
+  }
+  @keyframes arrowBounce {
+    0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)}
+  }
+
+  /* ══════════════ SECTION 1 — OPENING ══════════════ */
+  #opening {
+    position: relative;
+    width:100%; height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:2rem; overflow:hidden;
+    background: var(--black);
+  }
+  #starCanvas {
+    position:absolute; inset:0;
+    width:100%; height:100%;
+  }
+  #opening-text {
+    position:relative;
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 3.5vw, 2.6rem);
+    font-style:italic;
+    color:var(--white);
+    text-align:center;
+    letter-spacing:0.03em;
+    line-height:1.5;
+    max-width:700px;
+    padding:0 1.5rem;
+    min-height:2.8em;
+  }
+  .cursor-blink {
+    display:inline-block; width:2px; height:1.1em;
+    background:var(--rose); vertical-align:middle;
+    margin-left:3px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* SARA title glow */
+  .sara-title {
+    position: relative;
+    font-family: var(--font-serif);
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(244,160,176,0.5);
+    text-shadow: 0 0 60px rgba(244,160,176,0.25), 0 0 120px rgba(240,208,128,0.1);
+    animation: saraGlow 3s ease-in-out infinite alternate;
+    opacity: 0;
+    animation: saraGlow 3s ease-in-out infinite alternate, fadeUp 1s ease-in-out 0.3s forwards;
+  }
+  @keyframes saraGlow {
+    0%   { -webkit-text-stroke: 1px rgba(244,160,176,0.4); text-shadow: 0 0 40px rgba(244,160,176,0.2); }
+    100% { -webkit-text-stroke: 1px rgba(244,160,176,0.85); text-shadow: 0 0 80px rgba(244,160,176,0.5), 0 0 160px rgba(240,208,128,0.2); }
+  }
+
+  .heart-container {
+    display:flex; align-items:center; justify-content:center;
+    animation: heartbeat 1.6s ease-in-out infinite;
+    position:relative; z-index:1;
+  }
+  @keyframes heartbeat {
+    0%,100%{transform:scale(1)} 14%{transform:scale(1.18)} 28%{transform:scale(1)} 42%{transform:scale(1.12)} 56%{transform:scale(1)}
+  }
+  .heart { width:52px; height:52px; position:relative; display:inline-block; }
+  .heart::before, .heart::after {
+    content:''; position:absolute;
+    width:26px; height:42px;
+    background:var(--rose);
+    border-radius:26px 26px 0 0;
+    filter:drop-shadow(0 0 14px rgba(244,160,176,0.8));
+  }
+  .heart::before { left:26px; transform-origin:left bottom; transform:rotate(-45deg); }
+  .heart::after  { left:0;   transform-origin:right bottom; transform:rotate(45deg); }
+
+  .enter-btn {
+    position:relative;
+    font-family:var(--font-sans); font-weight:300;
+    letter-spacing:0.25em; text-transform:uppercase;
+    font-size:0.85rem; color:var(--rose);
+    border:1px solid rgba(244,160,176,0.4);
+    background:transparent; padding:0.85rem 2.6rem;
+    cursor:pointer; transition:all 0.4s ease-in-out;
+    border-radius:40px; opacity:0;
+    animation: fadeUp 1s ease-in-out 4.8s forwards;
+  }
+  .enter-btn:hover {
+    background:rgba(244,160,176,0.12);
+    border-color:var(--rose);
+    box-shadow:0 0 28px rgba(244,160,176,0.3);
+    transform:translateY(-2px);
+  }
+  @keyframes fadeUp {
+    from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)}
+  }
+
+  /* ══════════════ SECTION 2 — COUNTERS ══════════════ */
+  #counters {
+    background: var(--dark);
+    padding: 6rem 2rem 4rem;
+    position:relative; overflow:hidden;
+  }
+  #counters::before {
+    content:''; position:absolute;
+    top:-120px; left:50%; transform:translateX(-50%);
+    width:600px; height:600px;
+    background:radial-gradient(circle,rgba(244,160,176,0.06) 0%,transparent 70%);
+    pointer-events:none;
+  }
+  .section-title {
+    font-family:var(--font-serif);
+    font-size:clamp(1.8rem,4vw,3rem);
+    text-align:center; color:var(--white);
+    margin-bottom:0.6rem; letter-spacing:0.02em;
+  }
+  .section-subtitle {
+    text-align:center; font-size:0.9rem;
+    color:var(--white-dim); letter-spacing:0.15em;
+    text-transform:uppercase; margin-bottom:3rem;
+  }
+  .counters-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(175px,1fr));
+    gap:1.5rem;
+    max-width:1160px; margin:0 auto;
+  }
+  .counter-card {
+    background:linear-gradient(135deg,rgba(244,160,176,0.06),rgba(240,208,128,0.04));
+    border:1px solid rgba(244,160,176,0.18);
+    border-radius:20px; padding:2rem 1.4rem;
+    text-align:center; backdrop-filter:blur(8px);
+    transition:transform 0.4s ease,box-shadow 0.4s ease;
+    box-shadow:0 0 40px rgba(244,160,176,0.04);
+    opacity:0; transform:translateY(30px);
+  }
+  .counter-card.visible { animation:cardReveal 0.7s ease-in-out forwards; }
+  @keyframes cardReveal { to{opacity:1;transform:translateY(0)} }
+  .counter-card:hover {
+    transform:translateY(-6px) !important;
+    box-shadow:0 12px 50px rgba(244,160,176,0.15);
+    border-color:rgba(244,160,176,0.4);
+  }
+  .counter-value {
+    font-family:var(--font-serif);
+    font-size:clamp(2rem,4.5vw,3.2rem);
+    color:var(--rose); font-weight:600;
+    display:block; line-height:1;
+    margin-bottom:0.5rem;
+    text-shadow:0 0 30px rgba(244,160,176,0.5);
+  }
+  .counter-label {
+    font-family:var(--font-sans); font-weight:300;
+    font-size:0.78rem; letter-spacing:0.15em;
+    text-transform:uppercase; color:var(--white-dim);
+    line-height:1.4;
+  }
+  .counter-icon {
+    font-size:1.5rem; margin-bottom:0.8rem;
+    display:block;
+    filter:drop-shadow(0 0 8px rgba(240,208,128,0.6));
+  }
+
+  /* ══════════════ SECTION 3 — FLOATING NOTES ══════════════ */
+  #notes {
+    position:relative; min-height:100vh;
+    padding:6rem 1rem 4rem; overflow:hidden;
+    background:var(--black);
+    display:flex; flex-direction:column; align-items:center;
+  }
+  #notes::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 30% 60%,rgba(244,160,176,0.04) 0%,transparent 60%),
+               radial-gradient(ellipse at 70% 20%,rgba(240,208,128,0.03) 0%,transparent 50%);
+    pointer-events:none;
+  }
+  .notes-field {
+    position:relative; width:100%;
+    max-width:1200px; min-height:680px; margin-top:1rem;
+  }
+  .note-card {
+    position:absolute;
+    background:linear-gradient(135deg,rgba(244,160,176,0.1),rgba(240,208,128,0.06));
+    border:1px solid rgba(244,160,176,0.25);
+    border-radius:16px; padding:1.2rem 1.5rem;
+    font-family:var(--font-hand); font-size:1.15rem;
+    color:var(--white); backdrop-filter:blur(10px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.3),0 0 20px rgba(244,160,176,0.06);
+    max-width:200px; text-align:center; line-height:1.4;
+    cursor:default;
+    transition:transform 0.3s ease,box-shadow 0.3s ease;
+  }
+  .note-card:hover {
+    box-shadow:0 16px 50px rgba(244,160,176,0.2),0 0 30px rgba(244,160,176,0.12);
+    z-index:10;
+  }
+  .float-a { animation:floatA 5s ease-in-out infinite; }
+  .float-b { animation:floatB 6s ease-in-out infinite; }
+  .float-c { animation:floatC 4.5s ease-in-out infinite; }
+  .float-d { animation:floatD 7s ease-in-out infinite; }
+  .float-e { animation:floatE 5.5s ease-in-out infinite; }
+  @keyframes floatA { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-18px) rotate(1deg)} }
+  @keyframes floatB { 0%,100%{transform:translateY(0) rotate(3deg)}  50%{transform:translateY(-22px) rotate(-1deg)} }
+  @keyframes floatC { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-14px) rotate(2deg)} }
+  @keyframes floatD { 0%,100%{transform:translateY(0) rotate(2deg)}  50%{transform:translateY(-20px) rotate(-2deg)} }
+  @keyframes floatE { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-16px) rotate(1deg)} }
+
+  /* ══════════════ SECTION 4 — CONSTELLATION ══════════════ */
+  #constellation {
+    background:var(--dark);
+    padding:6rem 2rem 4rem;
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  #constellationSVG {
+    max-width:750px; width:100%;
+    margin:2rem auto 0; display:block;
+    filter:drop-shadow(0 0 30px rgba(240,208,128,0.1));
+  }
+  .star-point { cursor:pointer; transition:all 0.3s ease; }
+  .constellation-line {
+    stroke:rgba(240,208,128,0.28); stroke-width:1.2;
+    stroke-dasharray:5 4;
+    animation:linePulse 3s ease-in-out infinite;
+  }
+  @keyframes linePulse { 0%,100%{opacity:0.3} 50%{opacity:0.85} }
+  .star-body {
+    fill:var(--gold);
+    filter:drop-shadow(0 0 6px rgba(240,208,128,0.9));
+    transition:all 0.3s ease;
+  }
+  .star-point:hover .star-body { fill:white; filter:drop-shadow(0 0 14px white); }
+  .star-tooltip { opacity:0; transition:opacity 0.3s ease; pointer-events:none; }
+  .star-point:hover .star-tooltip { opacity:1; }
+  .constellation-label {
+    font-family:'Playfair Display',serif;
+    font-size:0.95rem; fill:rgba(240,208,128,0.5);
+    text-anchor:middle; font-style:italic;
+  }
+
+  /* SARA letters in constellation */
+  .sara-letter {
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,5vw,3.2rem);
+    font-weight:700;
+    fill:rgba(240,208,128,0.08);
+    text-anchor:middle;
+    letter-spacing:2px;
+  }
+
+  /* ══════════════ SECTION 5 — TIMELINE ══════════════ */
+  #timeline {
+    padding:6rem 0 4rem;
+    background:var(--black); overflow:hidden; position:relative;
+  }
+  #timeline::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 80% 50%,rgba(244,160,176,0.04) 0%,transparent 60%);
+    pointer-events:none;
+  }
+  .timeline-scroll-wrap {
+    overflow-x:auto;
+    padding:2rem 3rem 3rem;
+    scrollbar-width:thin;
+    scrollbar-color:rgba(244,160,176,0.3) transparent;
+    -webkit-overflow-scrolling:touch;
+  }
+  .timeline-scroll-wrap::-webkit-scrollbar { height:4px; }
+  .timeline-scroll-wrap::-webkit-scrollbar-track { background:transparent; }
+  .timeline-scroll-wrap::-webkit-scrollbar-thumb { background:rgba(244,160,176,0.3); border-radius:2px; }
+  .timeline-track {
+    display:flex; gap:0; align-items:center;
+    min-width:max-content; position:relative;
+  }
+  .timeline-line {
+    position:absolute; top:50%; left:0; right:0;
+    height:1px;
+    background:linear-gradient(to right,transparent,rgba(244,160,176,0.3) 10%,rgba(244,160,176,0.3) 90%,transparent);
+    transform:translateY(-50%); pointer-events:none;
+  }
+  .timeline-moment {
+    position:relative; display:flex;
+    flex-direction:column; align-items:center;
+    width:240px; flex-shrink:0; padding:0 1.5rem;
+  }
+  .timeline-moment:nth-child(even) { flex-direction:column-reverse; }
+  .moment-dot {
+    width:14px; height:14px; border-radius:50%;
+    background:var(--rose); box-shadow:0 0 16px rgba(244,160,176,0.7);
+    flex-shrink:0; position:relative; z-index:2; margin:1rem 0;
+  }
+  .moment-card {
+    background:linear-gradient(135deg,rgba(244,160,176,0.07),rgba(0,0,0,0.3));
+    border:1px solid rgba(244,160,176,0.2);
+    border-radius:14px; padding:1.2rem 1.4rem;
+    width:200px; text-align:center;
+  }
+  .moment-date {
+    font-size:0.7rem; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--gold);
+    margin-bottom:0.5rem; font-weight:300;
+  }
+  .moment-title {
+    font-family:var(--font-serif); font-size:0.95rem;
+    font-style:italic; color:var(--white);
+    margin-bottom:0.6rem; line-height:1.4;
+  }
+  .heartbeat-svg { width:100%; height:28px; overflow:visible; }
+  .hb-path {
+    fill:none; stroke:var(--rose); stroke-width:1.5;
+    stroke-linecap:round;
+    stroke-dasharray:200; stroke-dashoffset:200;
+    filter:drop-shadow(0 0 4px rgba(244,160,176,0.6));
+  }
+  .moment-card.hb-animate .hb-path { animation:drawHB 1.2s ease-in-out forwards; }
+  @keyframes drawHB { to{stroke-dashoffset:0} }
+
+  /* ══════════════ SECTION 6 — LETTER ══════════════ */
+  #letter {
+    background:linear-gradient(160deg,#1a100e 0%,#120e10 50%,#0e0f18 100%);
+    padding:7rem 2rem 4rem; position:relative; overflow:hidden;
+  }
+  #letter::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse at 50% 40%,rgba(244,160,176,0.07) 0%,transparent 65%);
+    pointer-events:none;
+  }
+  .letter-paper { max-width:720px; margin:0 auto; position:relative; }
+  .letter-paper::before {
+    content:''; position:absolute; inset:-2px;
+    border-radius:4px;
+    background:linear-gradient(135deg,rgba(244,160,176,0.3),rgba(240,208,128,0.2),transparent 60%);
+    z-index:-1;
+  }
+  .letter-inner {
+    background:rgba(20,14,12,0.95); border-radius:4px;
+    padding:clamp(2.5rem,6vw,5rem);
+    border:1px solid rgba(244,160,176,0.15);
+  }
+  .letter-salutation {
+    font-family:var(--font-hand);
+    font-size:clamp(1.6rem,4vw,2.2rem);
+    color:var(--rose); margin-bottom:1.8rem;
+  }
+  .letter-body {
+    font-family:var(--font-hand);
+    font-size:clamp(1.1rem,2.5vw,1.4rem);
+    line-height:2; color:rgba(245,240,236,0.88);
+    min-height:12em; white-space:pre-wrap;
+  }
+  .letter-sign {
+    font-family:var(--font-hand);
+    font-size:clamp(1.2rem,3vw,1.6rem);
+    color:var(--gold); margin-top:2.2rem; text-align:right;
+  }
+
+  /* ══════════════ SECTION 7 — CLOSING ══════════════ */
+  #closing {
+    position:relative; min-height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:2.4rem; overflow:hidden;
+    background:var(--black);
+  }
+  #closingStars { position:absolute; inset:0; width:100%; height:100%; }
+  .infinity-wrap { position:relative; width:clamp(200px,40vw,320px); }
+  #infinitySVG {
+    width:100%; overflow:visible;
+    filter:drop-shadow(0 0 20px rgba(240,208,128,0.4));
+  }
+  .inf-path {
+    fill:none; stroke:url(#infGrad); stroke-width:3.5;
+    stroke-linecap:round;
+    stroke-dasharray:1000; stroke-dashoffset:1000;
+    animation:drawInfinity 3s ease-in-out 0.5s forwards;
+  }
+  @keyframes drawInfinity { to{stroke-dashoffset:0} }
+  .closing-text {
+    font-family:var(--font-serif);
+    font-size:clamp(1.3rem,3.5vw,2.2rem);
+    font-style:italic; color:var(--white);
+    text-align:center; letter-spacing:0.04em;
+    opacity:0; animation:fadeUp 1s ease-in-out 3.5s forwards;
+    position:relative; z-index:1;
+  }
+
+  /* ══════════════ SECTION TRANSITIONS ══════════════ */
+  .section-fade {
+    opacity:0; transform:translateY(30px);
+    transition:opacity 0.9s ease-in-out, transform 0.9s ease-in-out;
+  }
+  .section-fade.in-view { opacity:1; transform:translateY(0); }
+
+  .divider {
+    display:flex; align-items:center; justify-content:center;
+    gap:1.2rem; padding:1.5rem 0;
+  }
+  .divider::before,.divider::after {
+    content:''; flex:1; max-width:180px; height:1px;
+  }
+  .divider::before { background:linear-gradient(to right,transparent,rgba(244,160,176,0.35)); }
+  .divider::after  { background:linear-gradient(to left,transparent,rgba(244,160,176,0.35)); }
+  .divider span { color:var(--rose); font-size:1rem; }
+
+  /* ══════════════ RESPONSIVE ══════════════ */
+  @media (max-width:600px) {
+    .notes-field { min-height:1400px; }
+    .note-card { font-size:1rem; max-width:160px; padding:1rem; }
+    .counter-card { padding:1.6rem 1rem; }
+    .timeline-moment { width:200px; }
+    .moment-card { width:170px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="petalCanvas"></canvas>
+
+<!-- ════════════════════════════════
+     SECTION 1 — OPENING
+════════════════════════════════ -->
+<section id="opening">
+  <canvas id="starCanvas"></canvas>
+
+  <div class="sara-title" style="position:relative;z-index:1;">S A R A</div>
+
+  <p id="opening-text" style="position:relative;z-index:1;">
+    <span id="typed-text"></span><span class="cursor-blink" id="cursor"></span>
+  </p>
+
+  <div class="heart-container">
+    <div class="heart"></div>
+  </div>
+
+  <button type="button" class="enter-btn" onclick="scrollToSection('#counters')">
+    Begin our story &nbsp;<span class="arrow-bounce">↓</span>
+  </button>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 2 — COUNTERS
+════════════════════════════════ -->
+<section id="counters">
+  <p class="section-subtitle section-fade">us, in numbers</p>
+  <h2 class="section-title section-fade">Our Story So Far</h2>
+  <div class="divider section-fade"><span>✦</span></div>
+
+  <div class="counters-grid">
+    <!-- Row 1: time-based -->
+    <div class="counter-card" data-target="2" data-suffix=" months &amp; 25 days">
+      <span class="counter-icon">🌙</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Months together</span>
+    </div>
+    <div class="counter-card" data-target="12" data-suffix=" weeks">
+      <span class="counter-icon">📅</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Weeks with you</span>
+    </div>
+    <div class="counter-card" data-target="84" data-suffix=" days">
+      <span class="counter-icon">☀️</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Days since we began</span>
+    </div>
+    <div class="counter-card" data-target="2016" data-suffix=" hrs">
+      <span class="counter-icon">⏳</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Hours of us</span>
+    </div>
+    <div class="counter-card" data-target="120960" data-suffix="">
+      <span class="counter-icon">⏱️</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Minutes I've loved you</span>
+    </div>
+    <div class="counter-card" data-target="7257600" data-suffix="">
+      <span class="counter-icon">💫</span>
+      <span class="counter-value">0</span>
+      <span class="counter-label">Seconds you've been mine</span>
+    </div>
+    <div class="counter-card" data-target="0" data-infinity="true">
+      <span class="counter-icon">💭</span>
+      <span class="counter-value">∞</span>
+      <span class="counter-label">Times I thought of you today</span>
+    </div>
+    <div class="counter-card" data-target="0" data-infinity="true">
+      <span class="counter-icon">🌹</span>
+      <span class="counter-value">∞</span>
+      <span class="counter-label">Reasons I love you, Sara</span>
+    </div>
+  </div>
+
+  <div class="nav-btn-wrap">
+    <button type="button" class="nav-btn" onclick="scrollToSection('#notes')">
+      What I love about you &nbsp;<span class="arrow-bounce">↓</span>
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 3 — FLOATING NOTES
+════════════════════════════════ -->
+<section id="notes">
+  <p class="section-subtitle section-fade">what I love about you</p>
+  <h2 class="section-title section-fade">In No Particular Order</h2>
+  <div class="divider section-fade"><span>✦</span></div>
+  <div class="notes-field" id="notesField"></div>
+
+  <div class="nav-btn-wrap" style="margin-top:3rem;">
+    <button type="button" class="nav-btn" onclick="scrollToSection('#constellation')">
+      See your constellation &nbsp;<span class="arrow-bounce">↓</span>
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 4 — SARA CONSTELLATION
+════════════════════════════════ -->
+<section id="constellation">
+  <p class="section-subtitle section-fade">written in the sky</p>
+  <h2 class="section-title section-fade">Sara's Constellation</h2>
+  <div class="divider section-fade"><span>✦</span></div>
+  <p class="section-fade" style="text-align:center;color:var(--white-dim);font-size:0.85rem;letter-spacing:0.1em;margin-top:-2rem;margin-bottom:1rem;">hover each star to discover</p>
+
+  <!-- S·A·R·A — 4 letter-groups, each with a star and connecting lines -->
+  <svg id="constellationSVG" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(240,208,128,0.45)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+      <filter id="starFilter">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+
+    <!-- Background letter shadows -->
+    <text class="sara-letter" x="118" y="310">S</text>
+    <text class="sara-letter" x="308" y="310">A</text>
+    <text class="sara-letter" x="498" y="310">R</text>
+    <text class="sara-letter" x="688" y="310">A</text>
+
+    <!-- Main connecting spine -->
+    <line class="constellation-line" x1="118" y1="120" x2="308" y2="120"/>
+    <line class="constellation-line" x1="308" y1="120" x2="498" y2="120"/>
+    <line class="constellation-line" x1="498" y1="120" x2="688" y2="120"/>
+
+    <!-- S — star + sub-stars -->
+    <line class="constellation-line" x1="118" y1="120" x2="78"  y2="70"/>
+    <line class="constellation-line" x1="118" y1="120" x2="158" y2="70"/>
+    <line class="constellation-line" x1="118" y1="120" x2="88"  y2="175"/>
+    <!-- S-sub stars -->
+    <g class="star-point">
+      <circle cx="78" cy="70" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="78" cy="70" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="158" cy="70" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="158" cy="70" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="88" cy="175" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="88" cy="175" r="3.5" filter="url(#starFilter)"/>
+    </g>
+
+    <!-- S — main star with tooltip -->
+    <g class="star-point" id="starS">
+      <circle cx="118" cy="120" r="22" fill="url(#sGlow)"/>
+      <polygon class="star-body" points="118,100 124,114 139,114 128,123 132,137 118,128 104,137 108,123 97,114 112,114"/>
+      <g class="star-tooltip">
+        <rect x="68" y="75" width="100" height="30" rx="7" fill="rgba(12,12,22,0.96)" stroke="rgba(240,208,128,0.55)" stroke-width="1"/>
+        <text x="118" y="95" text-anchor="middle" fill="#f0d080" font-family="Playfair Display,serif" font-size="13" font-style="italic">Sunshine ☀️</text>
+      </g>
+      <!-- S label -->
+      <text x="118" y="152" text-anchor="middle" fill="rgba(244,160,176,0.5)" font-family="Playfair Display,serif" font-size="11" letter-spacing="2">S</text>
+    </g>
+
+    <!-- A (first) — star + sub-stars -->
+    <line class="constellation-line" x1="308" y1="120" x2="268" y2="60"/>
+    <line class="constellation-line" x1="308" y1="120" x2="348" y2="60"/>
+    <line class="constellation-line" x1="308" y1="120" x2="308" y2="188"/>
+    <g class="star-point">
+      <circle cx="268" cy="60" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="268" cy="60" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="348" cy="60" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="348" cy="60" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="308" cy="188" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="308" cy="188" r="3.5" filter="url(#starFilter)"/>
+    </g>
+
+    <g class="star-point" id="starA1">
+      <circle cx="308" cy="120" r="26" fill="url(#sGlow)"/>
+      <polygon class="star-body" points="308,97 315,114 334,114 320,126 325,143 308,132 291,143 296,126 282,114 301,114"/>
+      <g class="star-tooltip">
+        <rect x="252" y="74" width="112" height="30" rx="7" fill="rgba(12,12,22,0.96)" stroke="rgba(240,208,128,0.55)" stroke-width="1"/>
+        <text x="308" y="94" text-anchor="middle" fill="#f0d080" font-family="Playfair Display,serif" font-size="13" font-style="italic">Adorable 🌸</text>
+      </g>
+      <text x="308" y="155" text-anchor="middle" fill="rgba(244,160,176,0.5)" font-family="Playfair Display,serif" font-size="11" letter-spacing="2">A</text>
+    </g>
+
+    <!-- R — star + sub-stars -->
+    <line class="constellation-line" x1="498" y1="120" x2="455" y2="68"/>
+    <line class="constellation-line" x1="498" y1="120" x2="540" y2="68"/>
+    <line class="constellation-line" x1="498" y1="120" x2="528" y2="180"/>
+    <g class="star-point">
+      <circle cx="455" cy="68" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="455" cy="68" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="540" cy="68" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="540" cy="68" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="528" cy="180" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="528" cy="180" r="3.5" filter="url(#starFilter)"/>
+    </g>
+
+    <g class="star-point" id="starR">
+      <circle cx="498" cy="120" r="22" fill="url(#sGlow)"/>
+      <polygon class="star-body" points="498,100 504,114 519,114 508,123 512,137 498,128 484,137 488,123 477,114 492,114"/>
+      <g class="star-tooltip">
+        <rect x="442" y="74" width="112" height="30" rx="7" fill="rgba(12,12,22,0.96)" stroke="rgba(240,208,128,0.55)" stroke-width="1"/>
+        <text x="498" y="94" text-anchor="middle" fill="#f0d080" font-family="Playfair Display,serif" font-size="13" font-style="italic">Radiant ✨</text>
+      </g>
+      <text x="498" y="152" text-anchor="middle" fill="rgba(244,160,176,0.5)" font-family="Playfair Display,serif" font-size="11" letter-spacing="2">R</text>
+    </g>
+
+    <!-- A (second) — star + sub-stars -->
+    <line class="constellation-line" x1="688" y1="120" x2="648" y2="62"/>
+    <line class="constellation-line" x1="688" y1="120" x2="728" y2="62"/>
+    <line class="constellation-line" x1="688" y1="120" x2="688" y2="190"/>
+    <g class="star-point">
+      <circle cx="648" cy="62" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="648" cy="62" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="728" cy="62" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="728" cy="62" r="3.5" filter="url(#starFilter)"/>
+    </g>
+    <g class="star-point">
+      <circle cx="688" cy="190" r="14" fill="url(#sGlow)"/>
+      <circle class="star-body" cx="688" cy="190" r="3.5" filter="url(#starFilter)"/>
+    </g>
+
+    <g class="star-point" id="starA2">
+      <circle cx="688" cy="120" r="22" fill="url(#sGlow)"/>
+      <polygon class="star-body" points="688,100 694,114 709,114 698,123 702,137 688,128 674,137 678,123 667,114 682,114"/>
+      <g class="star-tooltip">
+        <rect x="628" y="74" width="120" height="30" rx="7" fill="rgba(12,12,22,0.96)" stroke="rgba(240,208,128,0.55)" stroke-width="1"/>
+        <text x="688" y="94" text-anchor="middle" fill="#f4a0b0" font-family="Playfair Display,serif" font-size="13" font-style="italic">All mine ♡</text>
+      </g>
+      <text x="688" y="152" text-anchor="middle" fill="rgba(244,160,176,0.5)" font-family="Playfair Display,serif" font-size="11" letter-spacing="2">A</text>
+    </g>
+
+    <text class="constellation-label" x="400" y="398">✦ Sara's Constellation ✦</text>
+  </svg>
+
+  <div class="nav-btn-wrap">
+    <button type="button" class="nav-btn" onclick="scrollToSection('#timeline')">
+      Our moments &nbsp;<span class="arrow-bounce">↓</span>
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 5 — TIMELINE
+════════════════════════════════ -->
+<section id="timeline">
+  <div style="padding:0 2rem">
+    <p class="section-subtitle section-fade">the moments that made us</p>
+    <h2 class="section-title section-fade">A Heartbeat Timeline</h2>
+    <div class="divider section-fade"><span>✦</span></div>
+  </div>
+
+  <div class="timeline-scroll-wrap">
+    <div class="timeline-track">
+      <div class="timeline-line"></div>
+
+      <div class="timeline-moment">
+        <div class="moment-card">
+          <div class="moment-date">Day One</div>
+          <div class="moment-title">The day we first talked</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+        <div class="moment-dot"></div>
+      </div>
+
+      <div class="timeline-moment">
+        <div class="moment-dot"></div>
+        <div class="moment-card">
+          <div class="moment-date">Week Two</div>
+          <div class="moment-title">When I started saving your texts to read again</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+      </div>
+
+      <div class="timeline-moment">
+        <div class="moment-card">
+          <div class="moment-date">Week Four</div>
+          <div class="moment-title">When I knew I was falling for you, Sara</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+        <div class="moment-dot"></div>
+      </div>
+
+      <div class="timeline-moment">
+        <div class="moment-dot"></div>
+        <div class="moment-card">
+          <div class="moment-date">Month Two</div>
+          <div class="moment-title">The night we talked until the world went quiet</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+      </div>
+
+      <div class="timeline-moment">
+        <div class="moment-card">
+          <div class="moment-date">84 Days In</div>
+          <div class="moment-title">The day I decided you were it for me</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+        <div class="moment-dot"></div>
+      </div>
+
+      <div class="timeline-moment">
+        <div class="moment-dot"></div>
+        <div class="moment-card">
+          <div class="moment-date">Now & Always</div>
+          <div class="moment-title">Every ordinary day made extraordinary by you</div>
+          <svg class="heartbeat-svg"><path class="hb-path" d="M0,14 L20,14 L28,4 L36,24 L44,4 L52,24 L60,14 L80,14 L88,2 L96,26 L104,14 L130,14"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nav-btn-wrap">
+    <button type="button" class="nav-btn" onclick="scrollToSection('#letter')">
+      Read my letter to you &nbsp;<span class="arrow-bounce">↓</span>
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 6 — LETTER
+════════════════════════════════ -->
+<section id="letter">
+  <p class="section-subtitle section-fade">from my heart to yours</p>
+  <h2 class="section-title section-fade">A Letter for Sara</h2>
+  <div class="divider section-fade"><span>✦</span></div>
+
+  <div class="letter-paper section-fade">
+    <div class="letter-inner">
+      <div class="letter-salutation">My dearest Sara,</div>
+      <div class="letter-body" id="letterBody"></div>
+      <div class="letter-sign">Forever yours,<br>Muhib</div>
+    </div>
+  </div>
+
+  <div class="nav-btn-wrap">
+    <button type="button" class="nav-btn" onclick="scrollToSection('#closing')">
+      To infinity &nbsp;<span class="arrow-bounce">↓</span>
+    </button>
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     SECTION 7 — CLOSING
+════════════════════════════════ -->
+<section id="closing">
+  <canvas id="closingStars"></canvas>
+
+  <div class="infinity-wrap section-fade">
+    <svg id="infinitySVG" viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="infGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f4a0b0"/>
+          <stop offset="50%" stop-color="#f0d080"/>
+          <stop offset="100%" stop-color="#f4a0b0"/>
+        </linearGradient>
+      </defs>
+      <path class="inf-path" d="M160,70 C160,70 140,30 100,30 C60,30 30,52 30,70 C30,88 60,110 100,110 C140,110 160,70 160,70 C160,70 180,30 220,30 C260,30 290,52 290,70 C290,88 260,110 220,110 C180,110 160,70 160,70"/>
+    </svg>
+  </div>
+
+  <p class="closing-text">"You and me, Sara. No end."</p>
+  <p style="font-family:var(--font-hand);font-size:1.2rem;color:var(--rose);opacity:0;animation:fadeUp 1s ease-in-out 4s forwards;position:relative;z-index:1;">— Muhib</p>
+
+  <div style="opacity:0;animation:fadeUp 1s ease-in-out 4.6s forwards;position:relative;z-index:1;">
+    <button type="button" class="nav-btn gold" onclick="scrollToSection('#opening')">
+      ↑ &nbsp;Read again from the start
+    </button>
+  </div>
+</section>
+
+<script>
+/* ════════════════ SCROLL HELPER ════════════════ */
+function scrollToSection(id) {
+  document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ════════════════ STAR CANVAS ════════════════ */
+function initStarCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [];
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+    stars = [];
+    for (let i = 0; i < 300; i++) {
+      stars.push({
+        x: Math.random() * W, y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.2,
+        a: Math.random(), da: (Math.random() - 0.5) * 0.007
+      });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    stars.forEach(s => {
+      s.a += s.da;
+      if (s.a <= 0 || s.a >= 1) s.da *= -1;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(245,240,236,${s.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); window.addEventListener('resize', resize); draw();
+}
+initStarCanvas(document.getElementById('starCanvas'));
+initStarCanvas(document.getElementById('closingStars'));
+
+/* ════════════════ PETAL CANVAS ════════════════ */
+(function() {
+  const c = document.getElementById('petalCanvas');
+  const ctx = c.getContext('2d');
+  let W, H;
+  const orbs = Array.from({length:35}, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight * 2,
+    r: Math.random() * 4 + 1.5,
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: -(Math.random() * 0.55 + 0.12),
+    a: Math.random() * 0.5 + 0.1,
+    color: Math.random() > 0.5 ? '244,160,176' : '240,208,128'
+  }));
+  function resize() { W = c.width = window.innerWidth; H = c.height = window.innerHeight; }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    orbs.forEach(o => {
+      o.x += o.vx; o.y += o.vy;
+      if (o.y < -20) { o.y = H + 20; o.x = Math.random() * W; }
+      ctx.beginPath(); ctx.arc(o.x, o.y, o.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(${o.color},${o.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize(); window.addEventListener('resize', resize); draw();
+})();
+
+/* ════════════════ TYPEWRITER — OPENING ════════════════ */
+const phrase = "For Sara — the girl who lives in my every thought.";
+const typed  = document.getElementById('typed-text');
+const cursor = document.getElementById('cursor');
+let i = 0;
+function typeWriter() {
+  if (i < phrase.length) {
+    typed.textContent += phrase[i++];
+    setTimeout(typeWriter, 55 + Math.random() * 35);
+  } else {
+    setTimeout(() => { cursor.style.display = 'none'; }, 2000);
+  }
+}
+setTimeout(typeWriter, 900);
+
+/* ════════════════ INTERSECTION OBSERVER ════════════════ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.section-fade').forEach(el => io.observe(el));
+
+/* ════════════════ COUNTERS ════════════════ */
+function animateCounter(card) {
+  const el = card.querySelector('.counter-value');
+  if (card.dataset.infinity === 'true') { el.textContent = '∞'; return; }
+  const target = +card.dataset.target;
+  const suffix = card.dataset.suffix ? card.dataset.suffix.replace(/&amp;/g,'&') : '';
+  const dur = 2000;
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+    const val = Math.floor(ease * target);
+    el.textContent = val.toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target.toLocaleString() + suffix;
+  }
+  requestAnimationFrame(step);
+}
+const cObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.counted) {
+      e.target.dataset.counted = '1';
+      e.target.classList.add('visible');
+      setTimeout(() => animateCounter(e.target), 250);
+    }
+  });
+}, { threshold: 0.25 });
+document.querySelectorAll('.counter-card').forEach((c, i) => {
+  c.style.transitionDelay = (i * 0.1) + 's';
+  cObs.observe(c);
+});
+
+/* ════════════════ FLOATING NOTES ════════════════ */
+const notes = [
+  "the way you laugh when something really catches you off guard",
+  "your voice at night when it gets soft and sleepy",
+  "how you make ordinary days feel different",
+  "the thoughtful things you say without even trying",
+  "the way you care — deeply, quietly, completely",
+  "how you see beauty in small things",
+  "your eyes when you're excited about something",
+  "the comfort of knowing you exist in my world",
+  "how you make silence feel safe",
+  "the way home feels like wherever you are"
+];
+const floatClasses = ['float-a','float-b','float-c','float-d','float-e'];
+const field = document.getElementById('notesField');
+const positions = [
+  {left:'2%',top:'4%'},{left:'30%',top:'2%'},{left:'60%',top:'0%'},{left:'82%',top:'7%'},
+  {left:'12%',top:'38%'},{left:'44%',top:'34%'},{left:'72%',top:'38%'},
+  {left:'5%',top:'68%'},{left:'38%',top:'70%'},{left:'68%',top:'68%'}
+];
+notes.forEach((n, i) => {
+  const card = document.createElement('div');
+  card.className = 'note-card ' + floatClasses[i % floatClasses.length];
+  card.textContent = n;
+  card.style.left = positions[i].left;
+  card.style.top  = positions[i].top;
+  card.style.animationDelay = (i * 0.4) + 's';
+  field.appendChild(card);
+});
+
+/* ════════════════ HEARTBEAT ════════════════ */
+const hbObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('hb-animate'); });
+}, { threshold: 0.4 });
+document.querySelectorAll('.moment-card').forEach(c => hbObs.observe(c));
+
+/* ════════════════ LETTER TYPEWRITER ════════════════ */
+const letterText = `I've been trying to find the right words for a while now — and then I realised there are none. Not really. Because what I feel when I think about you, Sara, doesn't quite fit inside language.
+
+You are the kind of person who makes the world feel softer. Warmer. Like there's a light on somewhere and I know the way to it.
+
+I think about you in the most ordinary moments — in that half-asleep space just before the world starts again. You are there. Quietly. Always.
+
+84 days. 2,016 hours. 7,257,600 seconds. And in every single one of them, I would choose you again without thinking twice.
+
+I don't know how to explain what it means to find someone who makes you want to be more — not better in some anxious way, but more honest, more present, more alive to the beauty in every ordinary day.
+
+That's what you do, Sara. That's what you are to me.
+
+I love you in the way that doesn't need to announce itself. It just is. Quietly, completely, without condition.
+
+And if time is a thing that keeps moving — which it does, whether we want it to or not — then I want every second of it to move with you beside me.
+
+All of it. Every ordinary, unremarkable, extraordinary day.`;
+
+const letterEl = document.getElementById('letterBody');
+let letterStarted = false;
+const lObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !letterStarted) {
+      letterStarted = true;
+      let j = 0;
+      function typeLetter() {
+        if (j < letterText.length) {
+          letterEl.textContent += letterText[j++];
+          setTimeout(typeLetter, j < 60 ? 28 : 16);
+        }
+      }
+      setTimeout(typeLetter, 500);
+    }
+  });
+}, { threshold: 0.15 });
+lObs.observe(document.getElementById('letter'));
+
+/* ════════════════ MOBILE NOTES ════════════════ */
+function adjustNotes() {
+  if (window.innerWidth < 600) {
+    document.querySelectorAll('.note-card').forEach(c => {
+      c.style.position = 'relative';
+      c.style.left = 'auto'; c.style.top = 'auto';
+      c.style.margin = '0.5rem'; c.style.display = 'inline-block';
+    });
+    field.style.display = 'flex';
+    field.style.flexWrap = 'wrap';
+    field.style.justifyContent = 'center';
+    field.style.minHeight = 'auto';
+    field.style.padding = '1rem 0';
+  }
+}
+adjustNotes();
+window.addEventListener('resize', adjustNotes);
+</script>
+</body>
+</html>
